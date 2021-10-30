@@ -8,3 +8,4 @@
 # Файлы заканчивающиемся на _override.tf
 # Файлы заканчивающиемся на _override.tf.json
 # Файлы .terraformrc и terraform.rc
+# Вносим изменения в редакторе IDE
