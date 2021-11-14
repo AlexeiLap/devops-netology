@@ -45,7 +45,7 @@
     - копируем в него файл bash `cp /bin/bash /tmp/new_path_directory/bash`
     - устанавливаем переменную PATH `export PATH=/tmp/new_path_directory:/usr/bin:/bin`
     - запускаем `type -a bash`
-    - полученный результат: [Скриншот](img/type-a-bash.png)
+    - полученный результат: ![Скриншот](img/type-a-bash.png)
 13. Чем отличается планирование команд с помощью `batch` и `at`?
 
 ОТВЕТ: (`at [OPTION...]` runtime запускать команду в определенное время
