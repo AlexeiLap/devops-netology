@@ -110,14 +110,14 @@
 Его можно не учитывать при расчете (считать S, Ss или Ssl равнозначными).
 - ОТВЕТ: команда `ps ax -o pid,stat --sort stat`
 - наиболее частый статус: `I, I<`
-- `I`    Idle kernel thread               
+- `I`    поток ядра процессора              
 - дополнительные буквы:
-- `<`    high-priority (not nice to other users)
-- `N`    low-priority (nice to other users)
-- `L`    has pages locked into memory (for real-time and custom IO)
-- `s`    is a session leader
-- `l`    is multi-threaded (using CLONE_THREAD, like NPTL pthreads do)
-- `+`    is in the foreground process group
+- `<`    высокий приоритет
+- `N`    низкий приоритет
+- `L`    имеет частично 
+- `s`    является лидер сессии
+- `l`    много поточный
+- `+`    в группе процессов на переднем плане
  
  ---
 
