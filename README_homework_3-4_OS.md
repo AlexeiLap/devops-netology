@@ -63,7 +63,8 @@ static_configs:
 - проверил статусы все перезапустилось
  
  -добавление опций к запускаемому процессу производится через переменную
-`ExecStart=/usr/local/bin/node_exporter $EXTRA_OPTS`
+`EnvironmentFile=-/etc/default/node_exporter
+ExecStart=/usr/local/bin/node_exporter $EXTRA_OPTS`
 
 2. Ознакомьтесь с опциями node_exporter и выводом `/metrics` по-умолчанию. 
 - curl http://localhost:9100/metrics
