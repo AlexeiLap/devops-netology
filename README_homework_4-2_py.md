@@ -84,58 +84,47 @@ vagrant@vagrant:~$ python3 pt1.py /netology/sysadm-homeworks
 ## Обязательная задача 4
 1. Наша команда разрабатывает несколько веб-сервисов, доступных по http. Мы точно знаем, что на их стенде нет никакой балансировки, кластеризации, за DNS прячется конкретный IP сервера, где установлен сервис. Проблема в том, что отдел, занимающийся нашей инфраструктурой очень часто меняет нам сервера, поэтому IP меняются примерно раз в неделю, при этом сервисы сохраняют за собой DNS имена. Это бы совсем никого не беспокоило, если бы несколько раз сервера не уезжали в такой сегмент сети нашей компании, который недоступен для разработчиков. Мы хотим написать скрипт, который опрашивает веб-сервисы, получает их IP, выводит информацию в стандартный вывод в виде: <URL сервиса> - <его IP>. Также, должна быть реализована возможность проверки текущего IP сервиса c его IP из предыдущей проверки. Если проверка будет провалена - оповестить об этом в стандартный вывод сообщением: [ERROR] <URL сервиса> IP mismatch: <старый IP> <Новый IP>. Будем считать, что наша разработка реализовала сервисы: `drive.google.com`, `mail.google.com`, `google.com`.
 
-`sites.txt - файл сайтов для проверки, исходное содержимое`
-```
-drive.google.com has address 74.125.131.194
-mail.google.com has address 142.251.1.17
-google.com has address 173.194.222.101
-```
+Доработанный вариант через файл json и словарь
 
 ### Ваш скрипт:
 ```python
 #!/usr/bin/env python3
-
 import os
 import time
-while 1==1:
-        print('НОВАЯ ПРОВЕРКА')
-        time.sleep(5)
-        f = open('sites.txt', 'r')
-        lines = [line.strip() for line in f]
-        f.close()
-        #создаем список проверенных сайтов
-        checked_sites=[]
-        f = open('sites.txt', 'w')
-        for line in lines:
-                #print('проверяем строчку в файле: ' + line)
-                site = line.split(' has address ')
-                #сохранили старый ip
-                old_ip=site[1]
-                #если сайт уже в проверенных то сразу проверяем  на наличие ip
-                if site[0] in checked_sites:
-                        if old_ip not in new_ips:
-                                print('[ERROR] ' + site[0] + ' IP mismatch: ' + old_ip + ' Новые ip: ' + ' && '.join(new_ips))
-                #если сайт не проверяли то шлем запрос
-                else:
-                        checked_sites.append(site[0])
-                        result_os = os.popen("host " + site[0]).read()
-                        #print('- запустили команду: ' + "host " + site[0])
-                        #формируем список новых ip
-                        new_ips=[]
-                        for result in result_os.split('\n'):
-                                if result.find(' has address ') != -1:
-                                        new_data=result.split(' has address ')
-                                        new_ips.append(new_data[1])
-                                        #print('-- нашли адрес для сайта: ' + site[0] + ' ' + new_data[1])
-                                        #записываем данные в файл
-                                        f.write(site[0] + ' has address ' + new_data[1] + '\n')
-                                        #print('-- ip сайта ' + site[0] + ' - ' + new_data[1])
-                        #если в новых адресах нет старого ip то выдаем сообщение что ip изменен
-						if old_ip not in new_ips:
-                                print('[ERROR] ' + site[0] + ' IP mismatch: ' + old_ip + ' Новые ip: ' + ' && '.join(new_ips))
-        f.close()
+import json
+
+while True:
+    print('НОВАЯ ПРОВЕРКА')
+    #вводим признак изменений
+    wasChanged=0
+    time.sleep(1)
+    #читаем данные из словаря
+    with open('sites.json') as json_file:
+        json_dict = json.load(json_file)
+    for site in json_dict:
+        print('проверяем host: ' + site)
+        result_os = os.popen("host " + site).read()
+        #формируем список новых ip
+        new_ips=[]
+        for result in result_os.split('\n'):            
+            if result.find(' has address ') != -1:
+                new_data=result.split(' has address ')
+                new_ips.append(new_data[1])
+                #проверяем наличие ип в словаре
+                if new_data[1] not in json_dict[site]:
+                    wasChanged=1
+                    print('[ERROR] ' + site + ' IP mismatch ' + ' old_ips ' + ' && '.join(json_dict[site]) + ' Новый IP ' + new_data[1])
+        #перезаписываем словарь
+        json_dict[site]=new_ips
+    #если при проверке были изменения то перезаписываем файл json
+    if wasChanged==1:
+        with open('sites.json', 'w') as outfile:
+            json.dump(json_dict, outfile)
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 
-![Скриншот](img/4-2/результаты%20проверки%20ip%20адресов.png)
+![Скриншот](img/4-2/результаты%20проверки%20новые.png)
+
+Содержимое файла json
+![Скриншот](img/4-2/содержимое%20файла%20json.png)
