@@ -92,6 +92,7 @@ vagrant@vagrant:~$ python3 pt1.py /netology/sysadm-homeworks
 import os
 import time
 import json
+import socket
 
 while True:
     print('НОВАЯ ПРОВЕРКА')
@@ -103,19 +104,12 @@ while True:
         json_dict = json.load(json_file)
     for site in json_dict:
         print('проверяем host: ' + site)
-        result_os = os.popen("host " + site).read()
-        #формируем список новых ip
-        new_ips=[]
-        for result in result_os.split('\n'):            
-            if result.find(' has address ') != -1:
-                new_data=result.split(' has address ')
-                new_ips.append(new_data[1])
-                #проверяем наличие ип в словаре
-                if new_data[1] not in json_dict[site]:
-                    wasChanged=1
-                    print('[ERROR] ' + site + ' IP mismatch ' + ' old_ips ' + ' && '.join(json_dict[site]) + ' Новый IP ' + new_data[1])
+        host = socket.gethostbyname(site)
+        if host != json_dict[site]:
+            wasChanged=1
+            print('[ERROR] ' + site + ' IP mismatch ' + ' old_ip ' + json_dict[site] + ' Новый IP ' + host)
         #перезаписываем словарь
-        json_dict[site]=new_ips
+        json_dict[site]=host
     #если при проверке были изменения то перезаписываем файл json
     if wasChanged==1:
         with open('sites.json', 'w') as outfile:
@@ -124,7 +118,8 @@ while True:
 
 ### Вывод скрипта при запуске при тестировании:
 
-![Скриншот](img/4-2/результаты%20проверки%20новые.png)
+![Скриншот](img/4-2/сообщения%20новые.png)
 
-Содержимое файла json
-![Скриншот](img/4-2/содержимое%20файла%20json.png)
+Содержимое файла json новое
+
+![Скриншот](img/4-2/содержимое%20файла%20json%20новое.png)
