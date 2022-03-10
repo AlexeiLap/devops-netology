@@ -89,6 +89,7 @@ test_database=# select attname,avg_width from pg_stats where tablename='orders' 
 
 Предложите SQL-транзакцию для проведения данной операции.
 ```commandline
+BEGIN;
 create table orders_1 (check (price>499)) inherits (orders);
 create table orders_2 (check (price<=499)) inherits (orders);
 
@@ -97,10 +98,10 @@ INSERT INTO orders_2 SELECT * FROM orders WHERE price<=499;
 
 DELETE FROM only orders WHERE price>499 or price<=499;
 
-создаем правило
+--создаем правило
 create rule new_orders_1 as on insert to orders where (price>499) do instead insert into orders_1 values (new.*);
 create rule new_orders_2 as on insert to orders where (price<499) do instead insert into orders_2 values (new.*);
-
+COMMIT;
 ```
 
 Можно ли было изначально исключить "ручное" разбиение при проектировании таблицы orders?
