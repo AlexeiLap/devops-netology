@@ -53,7 +53,7 @@ https://github.com/netology-code/virt-homeworks/tree/master/07-terraform-02-synt
 ```
 
 1. Ссылку на репозиторий с исходной конфигурацией терраформа. 
-[ссыока на файлы конфигурации](https://github.com/AlexeiLap/devops-netology/tree/main/img/10-2).
+[ссылка на файлы конфигурации](https://github.com/AlexeiLap/devops-netology/tree/main/img/10-2).
 
 РЕЗУЛЬТАТЫ ЗАПУСКА:
 ![Версии терраформа](img/10-2/созданные%20ресурсы%20с%20выводом.png).
